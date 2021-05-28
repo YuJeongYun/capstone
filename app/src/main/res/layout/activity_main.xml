@@ -71,9 +71,10 @@
                 android:id="@+id/goToReviewTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="더보기"
+                android:layout_marginLeft="220dp"
                 android:layout_marginTop="4dp"
-                android:layout_marginLeft="220dp"/>
+                android:gravity="end"
+                android:text="더보기" />
 
         </LinearLayout>
 

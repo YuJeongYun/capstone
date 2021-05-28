@@ -134,11 +134,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<com.example.capstone.Rev
 
 
         // ******************** 추가 **************************
-        ImageButton reviewDeleteButton= cardView.findViewById(R.id.reviewDeleteButton);
+        /*ImageButton reviewDeleteButton= cardView.findViewById(R.id.reviewDeleteButton);
         if(userUid.equals(uid)) {
             reviewDeleteButton.setVisibility(VISIBLE);
             Log.e("review uid", userUid + uid);
-        }
+        }*/
         //////////////////////////////////////////////////////////
 
 
@@ -179,7 +179,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<com.example.capstone.Rev
         });
 
         // ******************* 추가 ******************
-        reviewDeleteButton.setOnClickListener(new View.OnClickListener() {
+        /*reviewDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, ReviewActivity.class);
@@ -207,7 +207,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<com.example.capstone.Rev
                         });
             }
         });
-
+*/
     }
 
 

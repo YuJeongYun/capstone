@@ -4,69 +4,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp"
     app:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/custom"
         android:orientation="vertical"
-        android:padding="10dp"
-        android:background="@drawable/custom">
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_baseline_location_on_24" />
-
-            <TextView
-                android:id="@+id/locationTextView5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:text="서초구"
-                android:textColor="#000000" />
-
             <TextView
                 android:id="@+id/titleTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
-                android:text="TextView"
-                android:layout_weight="1"
-                android:textColor="#000000"
-                tools:text="제목" />
-
-            <TextView
-                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="|"
-                android:layout_marginTop="2dp"
-                android:gravity="center"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="3dp"
+                android:layout_weight="1"
+                android:text="TextView"
                 android:textColor="#000000"
-                />
+                android:textStyle="bold"
+                tools:text="제목" />
 
-            <TextView
-                android:id="@+id/createdAtTextView"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="3dp"
-                android:gravity="start"
-                android:layout_weight="1"
-                android:textColor="#000000"
-                tools:text="2021-04-26" />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_baseline_location_on_24" />
+
+                <TextView
+                    android:id="@+id/locationTextView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="서초구"
+                    android:textColor="#000000" />
+            </LinearLayout>
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/contentTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="2"
+            android:paddingTop="3dp "
+            android:paddingBottom="3dp "
+            android:text="내용"
+            android:textColor="#000000" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

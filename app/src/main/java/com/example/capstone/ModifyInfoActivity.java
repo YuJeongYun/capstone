@@ -81,7 +81,7 @@ public class ModifyInfoActivity extends AppCompatActivity {
         db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     DocumentSnapshot documentSnapshot = task.getResult();
                     name = documentSnapshot.getString("name");
                     address_dong = documentSnapshot.getString("address_dong");
@@ -91,34 +91,12 @@ public class ModifyInfoActivity extends AppCompatActivity {
                     nameText.setText(name);
                     locationText.setText(address_gu + " " + address_dong);
 
-//                    Bitmap bmp = BitmapFactory.decodeFile(photo_url);
-//                    profileImageView.setImageBitmap(bmp);
-//                    Log.d("name", name);
-                }
-                else {
+                    Bitmap bmp = BitmapFactory.decodeFile(photo_url);
+                    profileImageView.setImageBitmap(bmp);
+                    Log.d("name", name);
+                } else {
                     Log.d("error", "error");
                 }
-            }
-        });
-
-        FirebaseStorage storage = FirebaseStorage.getInstance("gs://capstonedesign-d1ced.appspot.com/");
-        StorageReference storageReference = storage.getReference();
-
-        storageReference.child("users/" + user.getUid() + "/profileImage.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(getApplicationContext())
-                        .load(uri)
-                        .centerCrop()
-                        .override(500)
-                        .into(profileImageView);
-                Log.e("profileImage", getApplicationContext().toString());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                profileImageView.setImageResource(R.drawable.ic_baseline_person_24);
-                // Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
             }
         });
     }

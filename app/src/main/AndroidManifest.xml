@@ -42,6 +42,5 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="wknyi62op7" />
 
-
     </application>
 </manifest>

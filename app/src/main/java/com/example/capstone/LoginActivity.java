@@ -43,14 +43,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     };
-//    ************************* 필요없음 ****************************8
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        moveTaskToBack(true);
-//        android.os.Process.killProcess(android.os.Process.myPid());
-//        System.exit(1);
-//    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
+    }
 
     private void login() {
         String email = ((EditText)findViewById(R.id.emailEditText)).getText().toString();

@@ -53,8 +53,11 @@ public class  ExReviewAdapter extends RecyclerView.Adapter<com.example.capstone.
         TextView titleTextView = cardView.findViewById(R.id.titleTextView);
         titleTextView.setText(mDataset.get(position).getTitle());
 
-        TextView createdAtTextView = cardView.findViewById(R.id.createdAtTextView);
-        createdAtTextView.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(mDataset.get(position).getCreatedAt()));
+        TextView contentTextView = cardView.findViewById(R.id.contentTextView);
+        contentTextView.setText(mDataset.get(position).getContents());
+
+        //TextView createdAtTextView = cardView.findViewById(R.id.createdAtTextView);
+        //createdAtTextView.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(mDataset.get(position).getCreatedAt()));
     }
 
     @Override
