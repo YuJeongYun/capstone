@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,8 +39,9 @@ public class ReviewActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     EditText searchEditText;
     ArrayList<ReviewInfo> reviewList;
-    RelativeLayout loaderLayout, linearLayout;
+    RelativeLayout loaderLayout;
     CardView cardView;
+    LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
