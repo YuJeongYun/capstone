@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,24 +29,17 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
 
         findViewById(R.id.infoChangeButton).setOnClickListener(onClickListener);
-        //findViewById(R.id.reviewCheckButton).setOnClickListener(onClickListener);
-        //findViewById(R.id.commentCheckButton).setOnClickListener(onClickListener);
         findViewById(R.id.logoutButton2).setOnClickListener(onClickListener);
 
-        upload();
-    }
-
-    protected void onResume() {
-        super.onResume();
-        upload();
-    }
-
-    public void upload() {
+        //DB에 저장된 사용자 정보 가져옴
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         TextView nameText = (TextView)findViewById(R.id.nameText);
         TextView locationText = (TextView)findViewById(R.id.locationText);
         ImageView profileImageView = (ImageView)findViewById(R.id.profileImageView);
+
+        final RelativeLayout loaderLayout = findViewById(R.id.loaderLayout);
+        loaderLayout.setVisibility(View.VISIBLE);
 
         db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @SuppressLint("SetTextI18n")
@@ -64,6 +58,7 @@ public class InfoActivity extends AppCompatActivity {
                     Bitmap bmp = BitmapFactory.decodeFile(photo_url);
                     profileImageView.setImageBitmap(bmp);
                     Log.d("name", name);
+                    loaderLayout.setVisibility(View.GONE);
                 }
                 else {
                     Log.d("error", "error");
@@ -72,28 +67,24 @@ public class InfoActivity extends AppCompatActivity {
         });
     }
 
+    //onClickListener
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.infoChangeButton :
-                    myStartActivity(ModifyInfoActivity.class);
+                    myStartActivity(ModifyInfoActivity.class); //정보수정 페이지로 이동
                     break;
-
-              /*  case R.id.reviewCheclButton :
-                    break;
-
-                case R.id.commentCheckButton :
-                    break;*/
 
                 case R.id.logoutButton2 :
-                    FirebaseAuth.getInstance().signOut();
-                    myStartActivity(LoginActivity.class);
+                    FirebaseAuth.getInstance().signOut(); //로그아웃
+                    myStartActivity(LoginActivity.class); //로그인 페이지로 이동
                     break;
             }
         }
     };
 
+    //다른 액티비티 실행
     private void myStartActivity(Class c) {
         Intent intent = new Intent(this, c);
         startActivity(intent);

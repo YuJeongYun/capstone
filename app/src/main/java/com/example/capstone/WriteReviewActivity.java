@@ -38,18 +38,18 @@ import java.util.Date;
 public class WriteReviewActivity extends AppCompatActivity {
 
     private static final String TAG = "WriteReviewActivity";
+
     String name, address_gu;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
+
     private ArrayList<String> pathList = new ArrayList<>();
     private LinearLayout parent;
-    private int pathCount = 0;
-    private int successCount = 0;
+    private int pathCount = 0, successCount = 0;
     private ImageView selectedImageView;
-    private RelativeLayout buttonsBackgroundLayout;
-    private RelativeLayout loaderLayout;
+    private RelativeLayout buttonsBackgroundLayout, loaderLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +69,7 @@ public class WriteReviewActivity extends AppCompatActivity {
         findViewById(R.id.deleteButton).setOnClickListener(onClickListener);
         buttonsBackgroundLayout.setOnClickListener(onClickListener);
 
+        //DB에 저장된 사용자 정보 가져옴
         db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -86,6 +87,7 @@ public class WriteReviewActivity extends AppCompatActivity {
         });
     }
 
+    //다른 액티비티로부터 온 결과처리
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent){
         super.onActivityResult(requestCode, resultCode, resultIntent);
@@ -104,7 +106,7 @@ public class WriteReviewActivity extends AppCompatActivity {
                     parent.addView(linearLayout);
 
                     ImageView imageView = new ImageView(com.example.capstone.WriteReviewActivity.this);
-                    TextView textView = new TextView(this); //*************** 추가 ****************
+                    TextView textView = new TextView(this);
                     imageView.setLayoutParams(layoutParams);
                     imageView.setOnClickListener(new View.OnClickListener() {
 
@@ -116,7 +118,7 @@ public class WriteReviewActivity extends AppCompatActivity {
                     });
                     Glide.with(this).load(profilePath).into(imageView);
                     linearLayout.addView(imageView);
-                    linearLayout.addView(textView); //*************** 추가 ****************
+                    linearLayout.addView(textView);
                 }
                 break;
 
@@ -130,6 +132,8 @@ public class WriteReviewActivity extends AppCompatActivity {
         }
     }
 
+
+    //onClickListener
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -139,12 +143,12 @@ public class WriteReviewActivity extends AppCompatActivity {
                     break;
 
                 case R.id.imageButton:
-                    myStartActivity(GalleryActivity.class, "image", 0);
+                    myStartActivity(GalleryActivity.class, "image", 0); //갤러리로 이동
                     break;
 
                 case R.id.videoButton:
-                    startToast("한 개의 동영상만 업로드가 가능합니다."); // ********* 추가 *********
-                    myStartActivity(GalleryActivity.class, "video", 0);
+                    startToast("한 개의 동영상만 업로드가 가능합니다.");
+                    myStartActivity(GalleryActivity.class, "video", 0); //갤러리로 이동
                     break;
 
                 case R.id.buttonsBackgroundLayout:
@@ -154,12 +158,12 @@ public class WriteReviewActivity extends AppCompatActivity {
                     break;
 
                 case R.id.imageModify:
-                    myStartActivity(GalleryActivity.class, "image", 1);
+                    myStartActivity(GalleryActivity.class, "image", 1); //갤러리로 이동
                     buttonsBackgroundLayout.setVisibility(View.GONE);
                     break;
 
                 case R.id.videoModify:
-                    myStartActivity(GalleryActivity.class, "video", 1);
+                    myStartActivity(GalleryActivity.class, "video", 1); //갤러리로 이동
                     buttonsBackgroundLayout.setVisibility(View.GONE);
                     break;
 
@@ -171,16 +175,18 @@ public class WriteReviewActivity extends AppCompatActivity {
         }
     };
 
+    //저장할 사진경로 설정 후 Storage에 저장
     private void storageUpload() {
         String title = ((EditText)findViewById(R.id.titleEditText)).getText().toString();
         String contents = ((EditText)findViewById(R.id.contentsEditText)).getText().toString();
-        int likes = 0;
 
         if(title.length() > 0 && contents.length() > 0) {
             loaderLayout.setVisibility(View.VISIBLE);
             user = FirebaseAuth.getInstance().getCurrentUser();
+
             for (int i = 0; i < parent.getChildCount(); i++) {
                 String[] pathArray = pathList.get(pathCount).split("\\.");
+
                 final StorageReference mountainImagesRef = storageRef.child("posts/" + user.getUid() + "/" + pathCount + "." + pathArray[pathArray.length - 1]);
                 try {
                     InputStream stream = new FileInputStream(new File(pathList.get(pathCount)));
@@ -205,7 +211,7 @@ public class WriteReviewActivity extends AppCompatActivity {
                                     pathList.set(index, uri.toString());
                                     successCount++;
                                     if (pathList.size() == successCount) {
-                                        ReviewInfo reviewInfo = new ReviewInfo(user.getUid(), name, title, contents, pathList, address_gu, likes, new Date());
+                                        ReviewInfo reviewInfo = new ReviewInfo(user.getUid(), name, title, contents, pathList, address_gu, new Date());
                                         storeUpload(reviewInfo);
                                     }
                                 }
@@ -218,7 +224,7 @@ public class WriteReviewActivity extends AppCompatActivity {
                 pathCount++;
             }
             if(pathList.size() == 0) {
-                ReviewInfo reviewInfo = new ReviewInfo(user.getUid(), name, title, contents, pathList, address_gu, likes, new Date());
+                ReviewInfo reviewInfo = new ReviewInfo(user.getUid(), name, title, contents, pathList, address_gu, new Date());
                 storeUpload(reviewInfo);
             }
         }
@@ -227,6 +233,7 @@ public class WriteReviewActivity extends AppCompatActivity {
         }
     }
 
+    //DB에 리뷰정보 저장
     private void storeUpload(ReviewInfo review) {
         db = FirebaseFirestore.getInstance();
         String title = ((EditText)findViewById(R.id.titleEditText)).getText().toString();
@@ -249,10 +256,12 @@ public class WriteReviewActivity extends AppCompatActivity {
                 });
     }
 
+    //토스트 메시지
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
+    //다른 액티비티 실행
     private void myStartActivity(Class c, String media, int requestCode) {
         Intent intent = new Intent(this, c);
         intent.putExtra("media", media);

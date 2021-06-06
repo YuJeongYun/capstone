@@ -7,9 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class  ExReviewAdapter extends RecyclerView.Adapter<com.example.capstone.ExReviewAdapter.GalleryViewHolder> {
 
@@ -55,9 +53,6 @@ public class  ExReviewAdapter extends RecyclerView.Adapter<com.example.capstone.
 
         TextView contentTextView = cardView.findViewById(R.id.contentTextView);
         contentTextView.setText(mDataset.get(position).getContents());
-
-        //TextView createdAtTextView = cardView.findViewById(R.id.createdAtTextView);
-        //createdAtTextView.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(mDataset.get(position).getCreatedAt()));
     }
 
     @Override

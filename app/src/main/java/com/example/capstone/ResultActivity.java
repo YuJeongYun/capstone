@@ -26,16 +26,13 @@ public class  ResultActivity extends AppCompatActivity {
     private Chip chip_1, chip_2, chip_3, chip_4, chip_5, chip_6, chip_7, chip_8, chip_9, chip_10, chip_11, chip_12, chip_13, chip_14
             , chip_15, chip_16, chip_17, chip_18;
     private float gp1=0 , gp2=0, gp3=0,gp4=0,gp5=0;
-    @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+        RecommendActivity recommendActivity = (RecommendActivity)RecommendActivity.recommendActivity;
+        recommendActivity.finish();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Intent chartintent = new Intent(this, ChartActivity.class);
         Intent intent = getIntent();
@@ -58,8 +55,9 @@ public class  ResultActivity extends AppCompatActivity {
         chip_17 = findViewById(R.id.chip17);
         chip_18 = findViewById(R.id.chip18);
         ArrayList<String> list = new ArrayList<>();
-        ArrayList<String> sel = (ArrayList<String>)  intent.getSerializableExtra("list");
+        ArrayList<String> sel = (ArrayList<String>)  intent.getSerializableExtra("sel");
         ArrayList<String> gu = (ArrayList<String>) intent.getSerializableExtra("gu");
+        ArrayList<String> chart = (ArrayList<String>) intent.getSerializableExtra("chart"); // 0부터 짝수는 구이름 홀수는 sel된 값
         ArrayList<Float> l1 = new ArrayList<>();
         ArrayList<Float> avg = new ArrayList<>();
         ArrayList<Float> group1 = new ArrayList<>();
@@ -161,28 +159,28 @@ public class  ResultActivity extends AppCompatActivity {
 
 
                             int m1idx = gu.indexOf(m1);
-                            l1.add(group1.get(m1idx));
-                            l1.add(group2.get(m1idx));
-                            l1.add(group3.get(m1idx));
-                            l1.add(group4.get(m1idx));
-                            l1.add(group5.get(m1idx));
+                            l1.add((group1.get(m1idx)/avg.get(0))*5);
+                            l1.add((group2.get(m1idx)/avg.get(1))*5);
+                            l1.add((group3.get(m1idx)/avg.get(2))*5);
+                            l1.add((group4.get(m1idx)/avg.get(3))*5);
+                            l1.add((group5.get(m1idx)/avg.get(4))*5);
                             int m2idx = gu.indexOf(m2);
-                            l1.add(group1.get(m2idx));
-                            l1.add(group2.get(m2idx));
-                            l1.add(group3.get(m2idx));
-                            l1.add(group4.get(m2idx));
-                            l1.add(group5.get(m2idx));
+                            l1.add((group1.get(m2idx)/avg.get(0))*5);
+                            l1.add((group2.get(m2idx)/avg.get(1))*5);
+                            l1.add((group3.get(m2idx)/avg.get(2))*5);
+                            l1.add((group4.get(m2idx)/avg.get(3))*5);
+                            l1.add((group5.get(m2idx)/avg.get(4))*5);
                             int m3idx = gu.indexOf(m3);
-                            l1.add(group1.get(m3idx));
-                            l1.add(group2.get(m3idx));
-                            l1.add(group3.get(m3idx));
-                            l1.add(group4.get(m3idx));
-                            l1.add(group5.get(m3idx));
-                            for(int i=0; i<5;i++){
-                                System.out.println(avg.get(i));
-                                System.out.println(l1.get(i)+m1);
-                            }
+                            l1.add((group1.get(m3idx)/avg.get(0))*5);
+                            l1.add((group2.get(m3idx)/avg.get(1))*5);
+                            l1.add((group3.get(m3idx)/avg.get(2))*5);
+                            l1.add((group4.get(m3idx)/avg.get(3))*5);
+                            l1.add((group5.get(m3idx)/avg.get(4))*5);
 
+                            for(int i=0; i<l1.size();i++){
+                                System.out.println(l1.get(i));
+                            }
+                            System.out.println("chart" +chart.size() +"sel"+sel.size());
 
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
@@ -196,7 +194,9 @@ public class  ResultActivity extends AppCompatActivity {
                 chartintent.putExtra("m2",m2);
                 chartintent.putExtra("m3",m3);
                 chartintent.putExtra("l1",l1);
-                chartintent.putExtra("avg",avg);
+                chartintent.putExtra("sel",sel);
+                chartintent.putExtra("chart",chart);
+                //chartintent.putExtra("avg",avg);
                 startActivity(chartintent);
             }
         });

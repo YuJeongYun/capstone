@@ -1,16 +1,19 @@
 package com.example.capstone;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -28,7 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -37,22 +39,11 @@ import java.io.InputStream;
 public class ModifyInfoActivity extends AppCompatActivity {
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private String address;
+    private String name, address, address_gu, address_dong, photo_url,
+            new_address_gu, new_address_dong, new_photo_url, profilePath;
     private ImageView profileImageView;
-    private RelativeLayout loaderLayout;
     private EditText nameText;
-    private TextView locationText;
-    private TextView emailText;
-    private String new_address_gu;
-    private String new_address_dong;
-    private String new_photo_url;
-    private String profilePath;
-
-    private String name;
-    private String address_dong;
-    private String address_gu;
-    private String photo_url;
-    private Activity activity;
+    private TextView locationText, emailText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,21 +54,17 @@ public class ModifyInfoActivity extends AppCompatActivity {
         findViewById(R.id.goToPasswordResetButton).setOnClickListener(onClickListener);
         findViewById(R.id.locationAuthButton).setOnClickListener(onClickListener);
         findViewById(R.id.modifyButton).setOnClickListener(onClickListener);
-        loaderLayout = findViewById(R.id.loaderLayout);
-        profileImageView = findViewById(R.id.profileImageView);
 
+        profileImageView = findViewById(R.id.profileImageView);
         nameText = (EditText) findViewById(R.id.nameEditText);
         locationText = (TextView)findViewById(R.id.locationText);
         profileImageView = (ImageView)findViewById(R.id.profileImageView);
         emailText = (TextView)findViewById(R.id.emailText);
-        upload();
-    }
-
-    public void upload() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         emailText.setText(user.getEmail());
 
+        //DB에 저장된 사용자 정보 가져옴
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -101,19 +88,21 @@ public class ModifyInfoActivity extends AppCompatActivity {
         });
     }
 
+    //다른 액티비티로부터 온 결과처리
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
         super.onActivityResult(requestCode, resultCode, resultIntent);
 
         switch (requestCode) {
-            case 0:
+            case 0: //이미지
                 if (resultCode == Activity.RESULT_OK) {
                     profilePath = resultIntent.getStringExtra("profilePath");
                     new_photo_url = profilePath;
                     Glide.with(this).load(profilePath).centerCrop().override(500).into(profileImageView);
                 }
                 break;
-            case 1:
+            case 1: //위치
                 if (resultCode == RESULT_OK) {
                     address = resultIntent.getStringExtra("address");
 
@@ -128,39 +117,41 @@ public class ModifyInfoActivity extends AppCompatActivity {
         }
     }
 
+    //onClickListener
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.galleryButton:
-                    myStartActivity(GalleryActivity.class, "image");
+                    myStartActivity(GalleryActivity.class, "image"); //갤러리로 이동
                     break;
 
                 case R.id.locationAuthButton:
-                    myStartActivity(LocationAuthActivity.class, 1);
+                    myStartActivity(LocationAuthActivity.class, 1); //위치인증 페이지로 이동
                     break;
 
                 case R.id.goToPasswordResetButton:
-                    myStartActivity(PasswordResetActivity.class);
+                    myStartActivity(PasswordResetActivity.class); //비밀번호 재설정 페이지로 이동
                     break;
 
                 case R.id.modifyButton :
-                    updateInfo();
+                    updateInfo(); //변경내용에 따라 DB 수정
                     break;
             }
         }
     };
 
+    //변경내용에 따라 DB 수정
     private void updateInfo() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        //이름, 사진, 위치 변경 구현
         String new_name = nameText.getText().toString();
 
         if(new_address_dong == null && new_address_gu == null){
             new_address_dong = address_dong;
-            new_address_gu =address_gu;
+            new_address_gu = address_gu;
         }
+
         db.collection("users").document(user.getUid()).update("name", new_name, "address_dong", new_address_dong, "address_gu", new_address_gu, "photo_url", new_photo_url)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -176,6 +167,8 @@ public class ModifyInfoActivity extends AppCompatActivity {
                     }
                 });
 
+
+        //Storage에 변경된 사진 저장
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -208,25 +201,32 @@ public class ModifyInfoActivity extends AppCompatActivity {
         }
     }
 
+    //토스트 메시지
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
+    //다른 액티비티 실행
     private void myStartActivity(Class c) {
         Intent intent = new Intent(this, c);
         startActivity(intent);
     }
-
     private void myStartActivity(Class c, int requestCode) {
 
         Intent intent = new Intent(this, c);
         startActivityForResult(intent, requestCode);
     }
-
     private void myStartActivity(Class c, String media) {
         Intent intent = new Intent(this, c);
         intent.putExtra("media", media);
         startActivityForResult(intent, 0);
+    }
+
+    //배경 터치 시 키보드 숨김 //애뮬레이터에서 확인 필요
+    public boolean onTouchEvent(MotionEvent event) {
+        InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        return true;
     }
 }
 

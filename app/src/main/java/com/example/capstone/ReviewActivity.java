@@ -39,7 +39,7 @@ public class ReviewActivity extends AppCompatActivity {
     EditText searchEditText;
     ArrayList<ReviewInfo> reviewList;
     RelativeLayout loaderLayout;
-    CardView cardView; // ******** 추가 *********
+    CardView cardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +48,14 @@ public class ReviewActivity extends AppCompatActivity {
 
         findViewById(R.id.floatingActionButton).setOnClickListener(onClickListener);
         findViewById(R.id.searchButton).setOnClickListener(onClickListener);
-        findViewById(R.id.searchFloatingButton).setOnClickListener(onClickListener); // ******** 추가 *********
+        findViewById(R.id.searchFloatingButton).setOnClickListener(onClickListener);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(ReviewActivity.this));
 
         searchEditText = findViewById(R.id.searchEditText);
-        cardView = findViewById(R.id.searchCardView); // ******** 추가 *********
+        cardView = findViewById(R.id.searchCardView);
 
         loaderLayout = findViewById(R.id.loaderLayout);
         loaderLayout.setVisibility(View.VISIBLE);
@@ -67,15 +67,14 @@ public class ReviewActivity extends AppCompatActivity {
         String searchText = searchEditText.getText().toString();
 
         if(user != null) {
-
+            //DB에 저장된 사용자 및 리뷰 정보 가져옴(리뷰 게시판 글)
             CollectionReference colRef = db.collection("reviews");
             colRef.orderBy("createdAt", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @RequiresApi(api = Build.VERSION_CODES.N) // 추가
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful()) {
                         reviewList = new ArrayList<>();
-
 
                         for(QueryDocumentSnapshot document : task.getResult()) {
                             reviewList.add(new ReviewInfo(
@@ -85,16 +84,18 @@ public class ReviewActivity extends AppCompatActivity {
                                     document.getData().get("contents").toString(),
                                     (ArrayList<String>) document.getData().get("post"),
                                     document.getData().get("address_gu").toString(),
-                                    Math.toIntExact((Long) document.getData().get("likes")),
                                     new Date(document.getDate("createdAt").getTime())));
                         }
+
+                        //검색한 지역에 해당하는 리뷰 게시글 보여줌
                         if(searchText.length() > 0) {
-                            RecyclerView.Adapter mAdapter = new ReviewAdapter(ReviewActivity.this, reviewList, user.getUid()); // *************** 추가 ****************
+                            RecyclerView.Adapter mAdapter = new ReviewAdapter(ReviewActivity.this, reviewList, user.getUid());
                             recyclerView.setAdapter(mAdapter);
                             ((ReviewAdapter) mAdapter).filter(searchText);
                         }
+                        //전체 리뷰 게시글 보여줌
                         else {
-                            RecyclerView.Adapter mAdapter = new ReviewAdapter(ReviewActivity.this, reviewList, user.getUid()); //*************** 추가 ****************
+                            RecyclerView.Adapter mAdapter = new ReviewAdapter(ReviewActivity.this, reviewList, user.getUid());
                             recyclerView.setAdapter(mAdapter);
                         }
 
@@ -107,18 +108,19 @@ public class ReviewActivity extends AppCompatActivity {
         }
     }
 
+    //onClickListener
     View.OnClickListener onClickListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
             switch(v.getId()) {
                 case R.id.floatingActionButton :
-                    myStartActivity(WriteReviewActivity.class);
+                    myStartActivity(WriteReviewActivity.class); //리뷰 작성 게시판으로 이동
                     break;
 
                 case R.id.searchButton :
                     onResume();
                     break;
-                // ******** 추가 *********
+
                 case R.id.searchFloatingButton :
                     if(cardView.getVisibility() == View.GONE) {
                         cardView.setVisibility(View.VISIBLE);
@@ -131,14 +133,18 @@ public class ReviewActivity extends AppCompatActivity {
         }
     };
 
+    //토스트 메시지
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
+    //다른 액티비티로 이동
     private void myStartActivity(Class c) {
         Intent intent = new Intent(this, c);
         startActivity(intent);
     }
+
+    //옵션메뉴
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -150,7 +156,7 @@ public class ReviewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu:
-                myStartActivity(InfoActivity.class);
+                myStartActivity(InfoActivity.class); //마이페이지로 이동
                 break;
         }
         return super.onOptionsItemSelected(item);

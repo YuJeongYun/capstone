@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
-
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
@@ -28,14 +27,12 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.util.FusedLocationSource;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
 public class LocationAuthActivity extends AppCompatActivity implements OnMapReadyCallback {
-
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource locationSource;
@@ -68,7 +65,6 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
         findViewById(R.id.okButton).setOnClickListener(onClickListener);
         findViewById(R.id.cancelButton).setOnClickListener(onClickListener);
 
-
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -82,6 +78,7 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
         mapFragment.getMapAsync(this);
     }
 
+    //onClickListener
     View.OnClickListener onClickListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
@@ -89,6 +86,7 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
                 case R.id.okButton:
                     sendAddress();
                     break;
+
                 case R.id.cancelButton :
                     finish();
                     break;
@@ -125,7 +123,7 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
             // 요청 코드가 PERMISSIONS_REQUEST_CODE 이고, 요청한 퍼미션 개수만큼 수신되었다면
             boolean check_result = true;
 
-            // 모든 퍼미션을 허용했는지 체크합니다.
+            // 모든 퍼미션을 허용했는지 체크
             for (int result : grandResults) {
                 if (result != PackageManager.PERMISSION_GRANTED) {
                     check_result = false;
@@ -137,7 +135,7 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
                 //위치 값을 가져올 수 있음
             }
             else {
-                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료합니다.2 가지 경우가 있습니다.
+                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0])
                         || ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[1])) {
                     Toast.makeText(this, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.", Toast.LENGTH_LONG).show();
@@ -152,7 +150,6 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
             if (!locationSource.isActivated()) { // 권한 거부됨
 
             }
-            //naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
             return;
         }
         super.onRequestPermissionsResult(
@@ -160,9 +157,8 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
     }
 
     void checkRunTimePermission(){
-
         //런타임 퍼미션 처리
-        // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
+        // 1. 위치 퍼미션을 가지고 있는지 체크
         int hasFineLocationPermission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(this,
@@ -172,22 +168,22 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
                 hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
 
             // 2. 이미 퍼미션을 가지고 있다면
-            // ( 안드로이드 6.0 이하 버전은 런타임 퍼미션이 필요없기 때문에 이미 허용된 걸로 인식합니다.)
+            // ( 안드로이드 6.0 이하 버전은 런타임 퍼미션이 필요없기 때문에 이미 허용된 걸로 인식)
 
             // 3.  위치 값을 가져올 수 있음
-        } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
+        } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요. 2가지 경우(3-1, 4-1)가 있음
 
             // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우에는
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0])) {
 
-                // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
+                // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있음
                 Toast.makeText(this, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show();
-                // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                // 3-3. 사용자게에 퍼미션 요청을 함. 요청 결과는 onRequestPermissionResult에서 수신됨.
                 ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS,
                         PERMISSIONS_REQUEST_CODE);
             } else {
-                // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
-                // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 함
+                // 요청 결과는 onRequestPermissionResult에서 수신됨
                 ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS,
                         PERMISSIONS_REQUEST_CODE);
             }
@@ -195,7 +191,6 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
     }
 
     public String getCurrentAddress( double latitude, double longitude) {
-
         //지오코더... GPS를 주소로 변환
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 
@@ -331,8 +326,6 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
             }
         });
 
-
-
         View.OnClickListener onClickListener = new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -374,9 +367,7 @@ public class LocationAuthActivity extends AppCompatActivity implements OnMapRead
                 naverMap.moveCamera(cameraUpdate);
             }
         };
-
     }
-
 
     // 마커 정보 저장시킬 변수
     private Vector<LatLng> markersPosition;

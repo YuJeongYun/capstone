@@ -8,7 +8,6 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,7 +30,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<com.example.capstone.Rev
     private ArrayList<ReviewInfo> mDataset;
     private ArrayList<ReviewInfo> arrayList;
     private Activity activity;
-    private String userUid; //*************** 추가 ****************
+    private String userUid;
 
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
@@ -42,15 +41,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<com.example.capstone.Rev
         }
     }
 
-    public ReviewAdapter(Activity activity, ArrayList<ReviewInfo> myDataset, String userUid) { // *************** 추가 ****************
+    public ReviewAdapter(Activity activity, ArrayList<ReviewInfo> myDataset, String userUid) {
         this.activity = activity;
         mDataset = myDataset;
         arrayList = new ArrayList<ReviewInfo>();
         arrayList.addAll(myDataset);
 
-        this.userUid = userUid; //*************** 추가 ****************
+        this.userUid = userUid;
 
     }
+
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
         mDataset.clear();
@@ -115,7 +115,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<com.example.capstone.Rev
                 Glide.with(activity)
                         .load(uri)
                         .centerCrop()
-                        .override(100) // *********** 수정 ***********
+                        .override(100)
                         .into(userImageView);
                 Log.e("profileImage", activity.toString());
             }
@@ -170,7 +170,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<com.example.capstone.Rev
                 intent.putExtra("name", mDataset.get(position).getName());
                 intent.putExtra("contents", mDataset.get(position).getContents());
                 intent.putExtra("post", mDataset.get(position).getPost());
-                intent.putExtra("likes", mDataset.get(position).getLikes());
                 intent.putExtra("address_gu", mDataset.get(position).getAddress_gu());
                 intent.putExtra("createdAt", mDataset.get(position).getCreatedAt().toString());
 

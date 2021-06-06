@@ -13,7 +13,6 @@
         android:layout_centerInParent="true"
         android:background="#46FFFFFF"
         android:backgroundTint="#00FFFFFF"
-        android:indeterminateTint="@color/fourth"
-        />
+        android:indeterminateTint="@color/fourth" />
 
 </RelativeLayout>

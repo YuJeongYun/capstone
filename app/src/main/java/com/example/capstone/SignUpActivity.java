@@ -32,15 +32,13 @@ import java.io.InputStream;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private static final String TAG = "MemberInitActivity"; //추가
-    private FirebaseAuth mAuth;
-    private ImageView profileImageView; //추가
-    private String photo_url;
-    private String profilePath;
+    private static final String TAG = "MemberInitActivity";
 
-    private RelativeLayout loaderLayout; //추가
-    private String address;
-    FirebaseUser user;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private ImageView profileImageView;
+    private String photo_url, profilePath, address;
+    private RelativeLayout loaderLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
         findViewById(R.id.galleryButton).setOnClickListener(onClickListener);
     }
 
+    //Back 버튼 눌리면 앱 종료
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -64,41 +63,46 @@ public class SignUpActivity extends AppCompatActivity {
         System.exit(1);
     }
 
+    //다른 액티비티로부터 온 결과처리
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
         super.onActivityResult(requestCode, resultCode, resultIntent);
 
         switch (requestCode) {
-            case 0:
+            case 0: //이미지
                 if (resultCode == Activity.RESULT_OK) {
                     profilePath = resultIntent.getStringExtra("profilePath");
                     photo_url = profilePath;
                     Glide.with(this).load(profilePath).centerCrop().override(500).into(profileImageView);
                 }
-            case 1:
+            case 1: //위치
                 if (resultCode == RESULT_OK) {
                     address = resultIntent.getStringExtra("address");
                 }
         }
     }
 
+    //onClickListener
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.infoChangeButton:
-                    signUp();
+                    signUp(); //회원가입
                     break;
+
                 case R.id.locationAuthButton:
-                    myStartActivity(LocationAuthActivity.class, 1);
+                    myStartActivity(LocationAuthActivity.class, 1); //위치인증 페이지로 이동
                     break;
+
                 case R.id.galleryButton:
-                    myStartActivity(GalleryActivity.class, "image");
+                    myStartActivity(GalleryActivity.class, "image"); //갤러리로 이동
                     break;
             }
         }
     };
 
+    //회원가입
     private void signUp() {
         String email = ((EditText) findViewById(R.id.emailEditText)).getText().toString();
         String password = ((EditText) findViewById(R.id.passwordEditText)).getText().toString();
@@ -108,6 +112,7 @@ public class SignUpActivity extends AppCompatActivity {
             if (password.equals(passwordCheck)) {
                 final RelativeLayout loaderLayout = findViewById(R.id.loaderLayout);
                 loaderLayout.setVisibility(View.VISIBLE);
+
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -133,6 +138,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
+    //사용자 사진이 있는 경우, Storage에 사진 저장
     private void storageUpload() {
         String uid = user.getUid();
         String name = ((EditText) findViewById(R.id.nameEditText)).getText().toString();
@@ -188,6 +194,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
+    //DB에 사용자정보 업로드
     private void storeUpload(MemberInfo memberInfo) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         if (user != null) {
@@ -211,24 +218,19 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
+    //토스트 메시지
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
-    private void myStartActivity(Class c) {
-        Intent intent = new Intent(this, c);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
+    //다른 액티비티로 이동
     private void myStartActivity(Class c, int requestCode) {
         Intent intent = new Intent(this, c);
         startActivityForResult(intent, requestCode);
     }
-
     private void myStartActivity(Class c, String media) {
         Intent intent = new Intent(this, c);
         intent.putExtra("media", media);
         startActivityForResult(intent, 0);
     }
-
 }

@@ -71,11 +71,14 @@ public class GalleryActivity extends AppCompatActivity {
         String[] projection;
 
         Intent intent = getIntent();
-        if(intent.getStringExtra("media").equals("video")){ // 비디오
+        //비디오
+        if(intent.getStringExtra("media").equals("video")){
             uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
             projection = new String[] { MediaStore.MediaColumns.DATA, MediaStore.Video.Media.BUCKET_DISPLAY_NAME };
 
-        } else { // 이미지
+        }
+        //이미지
+        else {
             uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             projection = new String[] { MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
 
@@ -92,6 +95,7 @@ public class GalleryActivity extends AppCompatActivity {
         return listOfAllImages;
     }
 
+    //토스트 메시지
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }

@@ -5,11 +5,13 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,48 +46,29 @@ public class DetailedReviewActivity extends AppCompatActivity {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private String name, title, contents, address_gu, createdAt, uid;
+    private String name, title, contents, address_gu, uid, commentUid, commentName, comment;
     private ArrayList<String> post = new ArrayList<>();
-    private int likes;
 
     private LinearLayout contentLayout;
     private TextView titleTextView, userNameTextView, contentsTextView, locationTextView;
-    private ImageButton commentButton, likesButton, refreshButton;
     private EditText commentEditText;
+    private ImageButton commentButton, refreshButton;
+    private RecyclerView recyclerView;
     private ImageView userImageView2;
-    RecyclerView recyclerView;
-
-    VideoView videoView;
-
-    private String commentUid;
-    private String commentName;
-    private String comment;
-    private Date commentedAt;
-
-    private static final String TAG = "DetailedReviewActivity";
+    private VideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_review);
 
-        Intent intent = getIntent();
-        title = intent.getStringExtra("title");
-        name = intent.getStringExtra("name");
-        contents = intent.getStringExtra("contents");
-        address_gu = intent.getStringExtra("address_gu");
-        post = (ArrayList<String>) intent.getSerializableExtra("post");
-        uid = intent.getStringExtra("uid");
-        likes = intent.getIntExtra("likes", 0);
-        createdAt = intent.getStringExtra("createdAt");
-
         titleTextView = findViewById(R.id.titleTextView2);
         userNameTextView = findViewById(R.id.userNameTextView2);
         contentsTextView = findViewById(R.id.contentsTextView2);
         locationTextView = findViewById(R.id.locationTextView4);
+
         contentLayout = findViewById(R.id.contentsLayout3);
         userImageView2 = findViewById(R.id.userImageView2);
-
         commentButton = findViewById(R.id.commentButton);
         commentEditText = findViewById(R.id.commentEditText);
         refreshButton = findViewById(R.id.refreshButton);
@@ -97,6 +80,20 @@ public class DetailedReviewActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(DetailedReviewActivity.this));
 
+        Intent intent = getIntent();
+        title = intent.getStringExtra("title");
+        name = intent.getStringExtra("name");
+        contents = intent.getStringExtra("contents");
+        address_gu = intent.getStringExtra("address_gu");
+        post = (ArrayList<String>) intent.getSerializableExtra("post");
+        uid = intent.getStringExtra("uid");
+
+        titleTextView.setText(title);
+        userNameTextView.setText(name);
+        contentsTextView.setText(contents);
+        locationTextView.setText(address_gu);
+
+        //DB에 저장된 사용자 정보 가져옴
         db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -110,9 +107,9 @@ public class DetailedReviewActivity extends AppCompatActivity {
             }
         });
 
+        //Storage에 저장된 사용자 사진 가져옴
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://capstonedesign-d1ced.appspot.com/");
         StorageReference storageReference = storage.getReference();
-
         storageReference.child("users/" + uid + "/profileImage.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -127,17 +124,12 @@ public class DetailedReviewActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 userImageView2.setImageResource(R.drawable.ic_baseline_person_24);
-                // Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
             }
         });
 
         commentLoad();
 
-        titleTextView.setText(title);
-        userNameTextView.setText(name);
-        contentsTextView.setText(contents);
-        locationTextView.setText(address_gu);
-
+        //Storage에 저장된 게시글의 동영상 및 사진 가져옴
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         for(int i = 0; i < post.size(); i ++) {
             String content = post.get(i);
@@ -149,9 +141,7 @@ public class DetailedReviewActivity extends AppCompatActivity {
 
                 videoView = findViewById(R.id.videoView);
                 videoView.setVisibility(View.VISIBLE);
-
                 videoView.setMediaController(new MediaController(this));
-
                 videoView.setVideoURI(videoUri);
 
                 videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -171,39 +161,40 @@ public class DetailedReviewActivity extends AppCompatActivity {
         }
     }
 
+    //비디오 일시 정지
     @Override
     protected void onPause() {
         super.onPause();
-        //비디오 일시 정지
+
         if(videoView!=null && videoView.isPlaying()) videoView.pause();
     }
 
-    //액티비티가 메모리에서 사라질때..
+    //액티비티가 메모리에서 사라질 때 호출
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if(videoView!=null) videoView.stopPlayback();
     }
 
-
+    //onClickListener
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.commentButton :
-                    commentUpload();
+                    commentUpload(); //DB에 댓글 추가
                     break;
                 case R.id.refreshButton:
-                    commentLoad();
+                    commentLoad(); //DB에서 댓글 가져옴
                     break;
             }
         }
     };
 
+    //DB에 작성된 댓글 추가
     public void commentUpload() {
         commentUid = user.getUid();
         comment = commentEditText.getText().toString();
-        commentedAt = new Date();
 
         if (comment.length() > 0) {
             CommentInfo commentInfo = new CommentInfo(commentUid, commentName, comment, new Date());
@@ -216,8 +207,6 @@ public class DetailedReviewActivity extends AppCompatActivity {
                             public void onSuccess(Void aVoid) {
                                 startToast("댓글 등록을 성공하였습니다.");
                                 commentEditText.setText("");
-                                InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -232,10 +221,11 @@ public class DetailedReviewActivity extends AppCompatActivity {
         }
     }
 
+    //DB에서 해당 게시글의 댓글 가져옴
     public void commentLoad(){
         if(user != null) {
-            CollectionReference colRef = db.collection("reviews").document(title).collection("comments"); //5/5 변경함
-            colRef.orderBy("createdAt", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() { //.orderBy("createdAt", Query.Direction.DESCENDING)
+            CollectionReference colRef = db.collection("reviews").document(title).collection("comments");
+            colRef.orderBy("createdAt", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
@@ -259,9 +249,32 @@ public class DetailedReviewActivity extends AppCompatActivity {
         }
     }
 
-
-
+    //토스트 메시지
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    //다른 액티비티 실행
+    private void myStartActivity(Class c) {
+        Intent intent = new Intent(this, c);
+        startActivity(intent);
+    }
+
+    //옵션메뉴
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu:
+                myStartActivity(InfoActivity.class); //마이페이지로 이동
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

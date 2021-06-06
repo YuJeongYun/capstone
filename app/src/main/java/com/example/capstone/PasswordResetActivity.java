@@ -25,18 +25,19 @@ public class PasswordResetActivity extends AppCompatActivity {
         findViewById(R.id.sendButton).setOnClickListener(onClickListener);
     }
 
-
+    //onClickListener
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.sendButton:
-                    send();
+                    send(); //이메일 전송
                     break;
             }
         }
     };
 
+    //이메일 전송
     private void send() {
         String email = ((EditText)findViewById(R.id.emailEditText)).getText().toString();
 
@@ -60,6 +61,7 @@ public class PasswordResetActivity extends AppCompatActivity {
         }
     }
 
+    //토스트 메시지
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }

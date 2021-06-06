@@ -10,17 +10,15 @@ public class ReviewInfo {
     private String contents;
     private ArrayList<String> post;
     private String address_gu;
-    private int likes;
     private Date createdAt;
 
-    public ReviewInfo(String uid, String name, String title, String contents, ArrayList<String> post, String address_gu, int likes, Date createdAt) {
+    public ReviewInfo(String uid, String name, String title, String contents, ArrayList<String> post, String address_gu, Date createdAt) {
         this.uid = uid;
         this.name = name;
         this.title = title;
         this.contents = contents;
         this.post = post;
         this.address_gu = address_gu;
-        this.likes = likes;
         this.createdAt = createdAt;
     }
 
@@ -62,14 +60,6 @@ public class ReviewInfo {
 
     public void setAddress_gu(String address_gu) {
         this.address_gu = address_gu;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
     }
 
     public ArrayList<String> getPost() {

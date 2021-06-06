@@ -15,7 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:background="@color/background">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="서초구"
-                android:textColor="#000000" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -60,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
             android:text="TextView"
-            android:textColor="#000000"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
             tools:text="제목" />
@@ -78,7 +79,7 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:lines="5"
-                android:textColor="#000000"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 tools:text="내용" />
 
@@ -126,7 +127,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="3dp"
                 android:text="TextView"
-                android:textColor="#000000"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <TextView
@@ -138,7 +139,7 @@
                 android:layout_marginEnd="3dp"
                 android:gravity="center"
                 android:text="|"
-                android:textColor="#000000"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <TextView
@@ -148,7 +149,7 @@
                 android:layout_gravity="center"
                 android:layout_marginRight="3dp"
                 android:gravity="start"
-                android:textColor="#000000"
+                android:textColor="@color/black"
                 android:textSize="14sp"
                 tools:text="2021-04-26" />
 
@@ -172,6 +173,7 @@
                 android:layout_gravity="center"
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_baseline_insert_photo_24" />
+
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
