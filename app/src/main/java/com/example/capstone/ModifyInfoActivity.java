@@ -57,14 +57,15 @@ public class ModifyInfoActivity extends AppCompatActivity {
 
         profileImageView = findViewById(R.id.profileImageView);
         nameText = (EditText) findViewById(R.id.nameEditText);
-        locationText = (TextView)findViewById(R.id.locationText);
-        profileImageView = (ImageView)findViewById(R.id.profileImageView);
-        emailText = (TextView)findViewById(R.id.emailText);
-
-        emailText.setText(user.getEmail());
-
+        locationText = (TextView) findViewById(R.id.locationText);
+        profileImageView = (ImageView) findViewById(R.id.profileImageView);
+        emailText = (TextView) findViewById(R.id.emailText);
+        upload();
+    }
+    public void upload() {
         //DB에 저장된 사용자 정보 가져옴
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        emailText.setText(user.getEmail());
         db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -78,12 +79,32 @@ public class ModifyInfoActivity extends AppCompatActivity {
                     nameText.setText(name);
                     locationText.setText(address_gu + " " + address_dong);
 
-                    Bitmap bmp = BitmapFactory.decodeFile(photo_url);
-                    profileImageView.setImageBitmap(bmp);
-                    Log.d("name", name);
+                    //Bitmap bmp = BitmapFactory.decodeFile(photo_url);
+                    //profileImageView.setImageBitmap(bmp);
+                    //Log.d("name", name);
                 } else {
                     Log.d("error", "error");
                 }
+            }
+        });
+        FirebaseStorage storage = FirebaseStorage.getInstance("gs://capstonedesign-d1ced.appspot.com/");
+        StorageReference storageReference = storage.getReference();
+
+        storageReference.child("users/" + user.getUid() + "/profileImage.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getApplicationContext())
+                        .load(uri)
+                        .centerCrop()
+                        .override(500)
+                        .into(profileImageView);
+                Log.e("profileImage", getApplicationContext().toString());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                profileImageView.setImageResource(R.drawable.ic_baseline_person_24);
+                // Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -220,13 +241,6 @@ public class ModifyInfoActivity extends AppCompatActivity {
         Intent intent = new Intent(this, c);
         intent.putExtra("media", media);
         startActivityForResult(intent, 0);
-    }
-
-    //배경 터치 시 키보드 숨김 //애뮬레이터에서 확인 필요
-    public boolean onTouchEvent(MotionEvent event) {
-        InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        return true;
     }
 }
 

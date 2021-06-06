@@ -38,7 +38,7 @@ public class ReviewActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     EditText searchEditText;
     ArrayList<ReviewInfo> reviewList;
-    RelativeLayout loaderLayout;
+    RelativeLayout loaderLayout, linearLayout;
     CardView cardView;
 
     @Override
@@ -49,6 +49,7 @@ public class ReviewActivity extends AppCompatActivity {
         findViewById(R.id.floatingActionButton).setOnClickListener(onClickListener);
         findViewById(R.id.searchButton).setOnClickListener(onClickListener);
         findViewById(R.id.searchFloatingButton).setOnClickListener(onClickListener);
+        findViewById(R.id.menuFloatingButton).setOnClickListener(onClickListener);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -59,6 +60,8 @@ public class ReviewActivity extends AppCompatActivity {
 
         loaderLayout = findViewById(R.id.loaderLayout);
         loaderLayout.setVisibility(View.VISIBLE);
+
+        linearLayout = findViewById(R.id.menuFloatingLayout);
     }
 
     protected void onResume() {
@@ -129,6 +132,15 @@ public class ReviewActivity extends AppCompatActivity {
                     }
 
                     break;
+
+                case R.id.menuFloatingButton :
+                    if(linearLayout.getVisibility() == View.GONE) {
+                        linearLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        linearLayout.setVisibility(View.GONE);
+                    }
+                    break;
+
             }
         }
     };

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +30,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -108,6 +111,9 @@ public class SignUpActivity extends AppCompatActivity {
         String password = ((EditText) findViewById(R.id.passwordEditText)).getText().toString();
         String passwordCheck = ((EditText) findViewById(R.id.passwordCheckEditText)).getText().toString();
 
+        Pattern p = Patterns.EMAIL_ADDRESS; // ******* 추가 *********
+        Matcher m = p.matcher(email);
+
         if (email.length() > 0 && password.length() > 0 && passwordCheck.length() > 0) {
             if (password.equals(passwordCheck)) {
                 final RelativeLayout loaderLayout = findViewById(R.id.loaderLayout);
@@ -124,9 +130,12 @@ public class SignUpActivity extends AppCompatActivity {
                                     storageUpload();
 
                                 } else {
-                                    if (task.getException() != null) {
-                                        startToast(task.getException().toString());
+                                    if(!m.matches()) {
+                                        startToast("이메일 형식으로 입력하세요");
+                                    } else {
+                                        startToast("이미 존재하는 이메일입니다.");
                                     }
+
                                 }
                             }
                         });
