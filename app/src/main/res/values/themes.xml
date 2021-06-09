@@ -17,6 +17,11 @@
         <item name="android:buttonStyle">@style/customButtonFontStyle</item>
         <item name="android:editTextStyle">@style/customEditTextFontStyle</item>
         <item name="android:fontFamily">@font/custom_font_family</item>
+        <!--액션바 제거-->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!--editText 선택된 상태의 밑줄 색-->
+        <item name="colorControlActivated">@color/third</item>
     </style>
 
 </resources>

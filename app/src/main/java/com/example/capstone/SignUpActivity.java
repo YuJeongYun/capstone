@@ -57,15 +57,6 @@ public class SignUpActivity extends AppCompatActivity {
         findViewById(R.id.galleryButton).setOnClickListener(onClickListener);
     }
 
-    //Back 버튼 눌리면 앱 종료
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        moveTaskToBack(true);
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
-    }
-
     //다른 액티비티로부터 온 결과처리
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {

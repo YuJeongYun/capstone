@@ -61,7 +61,7 @@
             android:id="@+id/contentTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lines="2"
+            android:lines="1"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
             android:text="내용"

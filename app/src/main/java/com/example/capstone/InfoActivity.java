@@ -55,7 +55,6 @@ public class InfoActivity extends AppCompatActivity {
         TextView locationText = (TextView)findViewById(R.id.locationText);
         ImageView profileImageView = (ImageView)findViewById(R.id.profileImageView);
 
-
         db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @SuppressLint("SetTextI18n")
             @Override

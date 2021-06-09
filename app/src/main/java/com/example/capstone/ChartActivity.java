@@ -1,50 +1,35 @@
 package com.example.capstone;
+
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-
+import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-
-import com.bumptech.glide.load.resource.bitmap.CenterInside;
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.charts.RadarChart;
-import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.RadarData;
-import com.github.mikephil.charting.data.RadarDataSet;
-import com.github.mikephil.charting.data.RadarEntry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
-
-import java.lang.reflect.Array;
+import com.skydoves.balloon.ArrowOrientation;
+import com.skydoves.balloon.Balloon;
+import com.skydoves.balloon.BalloonAnimation;
 import java.util.ArrayList;
 
-import static android.net.wifi.p2p.nsd.WifiP2pServiceRequest.newInstance;
-
-
 public class ChartActivity extends AppCompatActivity {
-    //private ActivityChartBinding binding;
+
     FragmentPagerAdapter adapterViewPager;
     Intent intent;
     static ArrayList<Float> l1;
@@ -52,9 +37,11 @@ public class ChartActivity extends AppCompatActivity {
     float avg0,avg1,avg2,avg3,avg4,avg5,avg6,avg7,avg8,avg9,avg10
             ,avg11,avg12,avg13,avg14,avg15,avg16,avg17;
     float max;
+    ImageButton ballonbutton;
     Button button[] = new Button[18];
     ArrayList<BarEntry> visitors;
     String[] lab;
+    int[] barcolor;
     Integer[] Rid_button = {
             R.id.button1,R.id.button2,R.id.button3,R.id.button4,R.id.button5,R.id.button6,R.id.button7,R.id.button8,R.id.button9,R.id.button10,
             R.id.button11,R.id.button12,R.id.button13,R.id.button14,R.id.button15,R.id.button16,R.id.button17,R.id.button18
@@ -79,7 +66,34 @@ public class ChartActivity extends AppCompatActivity {
         m1 = intent.getStringExtra("m1");
         m2 = intent.getStringExtra("m2");
         m3 = intent.getStringExtra("m3");
+        ballonbutton = findViewById(R.id.imageButton2);
+        Balloon balloon = new Balloon.Builder(this)
+                .setArrowSize(10)
+                .setBackgroundColor(0xAA434343)
+                .setArrowOrientation(ArrowOrientation.TOP)
+                .setArrowPosition(0.847f)
+                .setArrowVisible(true)
+                .setWidthRatio(0.8f)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setTextColor(0xAAFFFFFF)
+                .setCornerRadius(9f)
+                .setText("먼저 오픈채팅을 생성하셨나요?")
+                .setBalloonAnimation(BalloonAnimation.NONE)
+                .build();
+        ballonbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                balloon.showAlignBottom(ballonbutton);
 
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        balloon.dismiss();
+                    }
+                }, 3000);
+            }
+        });
         ArrayList<String> sel = (ArrayList<String>) intent.getSerializableExtra("sel");
         ArrayList<String> chart = (ArrayList<String>) intent.getSerializableExtra("chart"); // 0부터 짝수는 구이름 홀수는 sel된 값
 
@@ -90,11 +104,21 @@ public class ChartActivity extends AppCompatActivity {
         for(int i=0; i<sel.size();i++){
             final int INDEX;
             INDEX = i;
+
+            button[0].setTypeface(null, Typeface.BOLD);
+
             button[INDEX].setVisibility(View.VISIBLE);
             button[INDEX].setText(sel.get(INDEX));
             button[INDEX].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    for(int i=0;i<18;i++){
+                        button[i].setTypeface(null, Typeface.NORMAL);
+                    }
+
+                    button[INDEX].setTypeface(null, Typeface.BOLD);
+
                     lab = new String[]{chart.get((INDEX*50)),chart.get((INDEX*50)+2),chart.get((INDEX*50)+4),chart.get((INDEX*50)+6),chart.get((INDEX*50)+8),chart.get((INDEX*50)+10),chart.get((INDEX*50)+12)};
                     visitors.set(0,new BarEntry(0,Integer.parseInt(chart.get((INDEX*50)+1))));
                     visitors.set(1,new BarEntry(1,Integer.parseInt(chart.get((INDEX*50)+3))));
@@ -111,7 +135,7 @@ public class ChartActivity extends AppCompatActivity {
             });
         }
         lab = new String[]{chart.get(0),chart.get(2),chart.get(4),chart.get(6),chart.get(8),chart.get(10),chart.get(12)};
-
+        barcolor = new int[]{0xAA19256F,0xAA2A3986,0xAA5767A7,0xAA7F8FC7,0xAAAEBDE8,0xAAC3D0F1,0xAAD2DEF8};
         visitors = new ArrayList<>();
         visitors.add(new BarEntry(0,Integer.parseInt(chart.get(1))));
         visitors.add(new BarEntry(1,Integer.parseInt(chart.get(3))));
@@ -130,7 +154,7 @@ public class ChartActivity extends AppCompatActivity {
             avg[j] = avg[j] / 25;
         }
         max = avg[0];
-        ll = new LimitLine(avg[0], "평균 선");
+        ll = new LimitLine(avg[0], "평균 "+avg[0]);
         setData();
 
         /*
@@ -185,14 +209,17 @@ public class ChartActivity extends AppCompatActivity {
         barchart.invalidate();
         yLAxis.removeAllLimitLines();
         BarDataSet barDataSet = new BarDataSet(visitors,"Visiters");
-        barDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        barDataSet.setColors(barcolor);
         barDataSet.setValueTextColor(Color.BLACK);
         barDataSet.setValueTextSize(11);
-
+        barDataSet.setFormLineWidth(10);
+        barDataSet.setBarShadowColor(Color.LTGRAY);
+        barDataSet.setHighlightEnabled(false);
 
         BarData barData = new BarData(barDataSet);
 
-        ll.setLineWidth(10f);
+        ll.setLineWidth(5f);
+        ll.setLineColor(0xAAA30513);
         barchart = findViewById(R.id.barchart);
         barchart.setFitBars(true);
 
@@ -255,7 +282,4 @@ public class ChartActivity extends AppCompatActivity {
             return NUM_ITEMS;
         }
     }
-
-
-
 }

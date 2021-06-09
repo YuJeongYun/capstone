@@ -1,6 +1,7 @@
 package com.example.capstone;
 
 import android.content.Intent;
+import android.icu.text.IDNA;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.goToReviewTextView).setOnClickListener(onClickListener);
         findViewById(R.id.recommendButton).setOnClickListener(onClickListener);
+        findViewById(R.id.infoButton).setOnClickListener(onClickListener);  //추가
 
         //로그인되어 있지 않으면 로그인 페이지로 이동
         if (user == null) {
@@ -128,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.recommendButton:
                     myStartActivity(RecommendActivity.class); //추천 게시판으로 이동
                     break;
+                //추가
+                case R.id.infoButton:
+                    myStartActivity(InfoActivity.class); //마이페이지로 이동
             }
         }
     };
@@ -138,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //옵션메뉴
+    /*//옵션메뉴
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -154,5 +159,5 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }

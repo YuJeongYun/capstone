@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -414,6 +415,20 @@ public class RecommendActivity extends AppCompatActivity {
                                         regu.add(key);
                                     }
 
+                                    if(!chip_1.isChecked() && !chip_2.isChecked() && !chip_3.isChecked() && !chip_4.isChecked() && !chip_5.isChecked() && !chip_6.isChecked()
+                                            && !chip_7.isChecked() && !chip_8.isChecked() && !chip_9.isChecked() && !chip_10.isChecked() && !chip_11.isChecked() && !chip_12.isChecked()
+                                            && !chip_13.isChecked() && !chip_14.isChecked() && !chip_15.isChecked() && !chip_16.isChecked() && !chip_17.isChecked() && !chip_18.isChecked() ){
+                                        Toast.makeText(getApplicationContext(), "조건을 선택해주세요.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        intent.putExtra("m1",regu.get(0));
+                                        intent.putExtra("m2",regu.get(1));
+                                        intent.putExtra("m3",regu.get(2));
+                                        intent.putExtra("sel",sel);
+                                        intent.putExtra("chart",chart);
+                                        intent.putExtra("gu",gu);
+                                        startActivity(intent);
+
+                                    }
 
                                     intent.putExtra("m1",regu.get(0));
                                     intent.putExtra("m2",regu.get(1));

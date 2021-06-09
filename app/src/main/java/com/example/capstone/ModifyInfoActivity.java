@@ -135,6 +135,7 @@ public class ModifyInfoActivity extends AppCompatActivity {
                     new_address_dong = split_address[3];
                     locationText.setText(new_address_gu + " " + new_address_dong);
                 }
+                break;
         }
     }
 
@@ -178,7 +179,8 @@ public class ModifyInfoActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         startToast("회원정보 수정을 성공하였습니다.");
-                        finish();
+                        //finish();
+                        myStartActivity(MainActivity.class);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

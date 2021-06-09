@@ -1,5 +1,6 @@
 package com.example.capstone;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -57,10 +58,14 @@ public class DetailedReviewActivity extends AppCompatActivity {
     private ImageView userImageView2;
     private VideoView videoView;
 
+    InputMethodManager imm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_review);
+
+        imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 
         titleTextView = findViewById(R.id.titleTextView2);
         userNameTextView = findViewById(R.id.userNameTextView2);
@@ -183,6 +188,8 @@ public class DetailedReviewActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.commentButton :
                     commentUpload(); //DB에 댓글 추가
+                    commentLoad();
+                    imm.hideSoftInputFromWindow(commentEditText.getWindowToken(), 0);
                     break;
                 case R.id.refreshButton:
                     commentLoad(); //DB에서 댓글 가져옴

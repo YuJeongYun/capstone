@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -20,7 +18,6 @@ import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
-
 import java.util.ArrayList;
 
 public class FirstFragment extends Fragment {
@@ -29,7 +26,7 @@ public class FirstFragment extends Fragment {
     private int page;
     private String name;
     private float v1,v2,v3,v4,v5;
-    public static FirstFragment newInstance(String name, float v1, float v2, float v3, float v4, float v5){
+    public static FirstFragment newInstance(String name,float v1,float v2,float v3,float v4,float v5){
         FirstFragment fragment = new FirstFragment();
         Bundle args = new Bundle();
         args.putString("name",name);
@@ -61,17 +58,19 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first, container, false);
+
         radarChart = view.findViewById(R.id.radarChart);
         radarChart.getDescription().setEnabled(false);
-        radarChart.setWebLineWidth(1f);
-        radarChart.setWebColor(Color.BLACK);
-        radarChart.setWebLineWidth(1f);
-        radarChart.setWebColorInner(Color.BLACK);
+        radarChart.setWebLineWidth(1.5f);
+        radarChart.setWebColor(Color.DKGRAY);
+        radarChart.setWebLineWidth(1.5f);
+        radarChart.setWebColorInner(Color.DKGRAY);
         radarChart.setWebAlpha(200);
+        radarChart.setTouchEnabled(false);
         String[] label = new String[] {"생활·편의·교통","교육","복지 문화","자연","안전"};
         setData();
 
-        radarChart.animateXY(1000,1000, Easing.EaseInOutQuad, Easing.EaseInOutQuad);
+        radarChart.animateXY(1000,1000, Easing.EaseInOutQuad,Easing.EaseInOutQuad);
 
         XAxis xAxis = radarChart.getXAxis();
         xAxis.setTextSize(12f);
@@ -113,25 +112,25 @@ public class FirstFragment extends Fragment {
         RadarDataSet set1 =new RadarDataSet(main, "평균");
         set1.setValueTextSize(2f);
         set1.setValueTextColor(Color.RED);
-        set1.setColor(Color.RED);
-        set1.setFillColor(Color.RED);
+        set1.setColor(0xAAc17774);
+        set1.setFillColor(0xAAc17774);
         set1.setDrawFilled(true);
-        //set1.setFillAlpha(180);
+        set1.setFillAlpha(100);
         set1.setLineWidth(2f);
         set1.setDrawHighlightIndicators(false);
         set1.setDrawHighlightCircleEnabled(true);
 
 
         RadarDataSet set2 =new RadarDataSet(val, name);
-        set2.setColor(Color.GREEN);
-        set2.setFillColor(Color.GREEN);
+        set2.setColor(0xAA7c99c7);
+        set2.setFillColor(0xAA7c99c7);
         set2.setDrawFilled(true);
-        //set2.setFillAlpha(180);
+        set2.setFillAlpha(100);
         set2.setLineWidth(2f);
         set2.setDrawHighlightIndicators(false);
         set2.setDrawHighlightCircleEnabled(true);
         set2.setValueTextSize(2f);
-        set2.setValueTextColor(Color.GREEN);
+        set2.setValueTextColor(Color.BLACK);
 
 
         ArrayList<IRadarDataSet> sets = new ArrayList<>();
