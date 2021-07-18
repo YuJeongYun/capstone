@@ -85,3 +85,5 @@
   - 또한, 안드로이드는 소프트웨어 개발 키트(SDK)를 통해 응용 프로그램을 개발하기 위해 필요한 각종 도구들과 응용 프로그램 프로그래밍 인터페이스(API)를 제공한다.
 
 ---
+* https://github.com/yeonjiChoi/CapstoneDesign.git
+* https://github.com/cse-hansung/capstone2021.git
